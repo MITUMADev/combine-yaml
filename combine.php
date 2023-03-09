@@ -26,3 +26,27 @@
 
 ?>
 
+<?php
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $yaml_files = $_FILES['yaml-files']['tmp_name'];
+  
+  if (empty($yaml_files)) {
+    $error = 'Please select at least one YAML file.';
+  } else {
+    $combined_yaml = '';
+    foreach ($yaml_files as $yaml_file) {
+      $yaml_contents = file_get_contents($yaml_file);
+      $combined_yaml .= $yaml_contents . "\n";
+    }
+    
+    $combined_file_name = 'combined_yaml_' . date('YmdHis') . '.yaml';
+    $combined_file_path = __DIR__ . '/' . $combined_file_name;
+    
+    file_put_contents($combined_file_path, $combined_yaml);
+    
+    $download_link = $combined_file_name;
+  }
+}
+
+?>
